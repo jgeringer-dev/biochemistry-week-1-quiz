@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glycogen Metabolism | Interactive Free-Response</title>
+<style>
+:root{--navy:#182b49;--teal:#21878d;--gold:#e6ad41;--paper:#f4f7fa;--ink:#293647;--muted:#657487;--line:#dbe2e9}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--navy);color:white;padding:32px 20px}header .wrap,main{max-width:960px;margin:auto}header p{color:#d8e6f0;margin:.35rem 0}h1{margin:0;font-size:clamp(1.7rem,4vw,2.5rem)}main{padding:22px 16px 60px}.panel,.question{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 14px;box-shadow:0 2px 8px #1b355008}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.stats{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.progress{height:8px;background:#e7edf2;border-radius:99px;overflow:hidden;margin:12px 0}.bar{height:100%;width:0;background:var(--teal);transition:width .2s}
+button,select{font:inherit;border-radius:9px;padding:9px 13px;border:1px solid #c8d3de;background:white;color:var(--ink);cursor:pointer}button.primary{background:var(--navy);border-color:var(--navy);color:white}button:hover{filter:brightness(.96)}button:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #e6ad4180;outline-offset:2px}
+.question h2{font-size:1.03rem;margin:0 0 12px}.qtop{display:flex;gap:12px;align-items:flex-start}.num{flex:0 0 34px;height:34px;border-radius:9px;background:#e5f4f2;color:#155e63;display:grid;place-items:center;font-weight:800}
+textarea{width:100%;min-height:94px;resize:vertical;border:1px solid #cbd5df;border-radius:9px;padding:11px;font:inherit;margin:8px 0 10px} .actions{display:flex;gap:8px;flex-wrap:wrap}.answer{margin-top:12px;padding:14px;background:#eef7f6;border-left:4px solid var(--teal);border-radius:8px}.answer strong{display:block;color:#155e63;margin-bottom:4px}.hint{color:var(--muted);font-size:.9rem}.mastered{background:#e6f4e8;border-color:#9acda3}.hidden{display:none}.pill{display:inline-block;border-radius:99px;background:#e9eef4;padding:3px 9px;font-size:.8rem;color:#34445a}
+@media print{body{background:white}.controls,.actions,.progress,.no-print{display:none!important}.question,.panel{box-shadow:none;break-inside:avoid}textarea{min-height:65px}header{background:white;color:black;padding:10px 0}header p{color:#333}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><p><strong>WEEK 1 • LECTURE REVIEW</strong></p><h1>Glycogen Metabolism</h1><p>Interactive free-response assignment · Chiropractic board review</p></div></header>
+<main>
+<section class="panel">
+<div class="stats"><div><strong id="count">0 of 25 mastered</strong><div class="hint">Your progress is tracked while this page remains open.</div></div><button id="reset">Reset answers & progress</button></div>
+<div class="progress" aria-label="Progress"><div class="bar" id="bar"></div></div>
+<div class="controls no-print"><label for="filter"><strong>Show:</strong></label><select id="filter"><option value="all">All questions (25)</option><option value="structure">Structure & storage (1–8)</option><option value="metabolism">Metabolism (9–20)</option><option value="clinical">Clinical applications (21–25)</option></select><button id="print">Print assignment</button><button id="showall">Reveal all answers</button></div>
+<p class="hint">Instructions: Answer in your own words, select “Check answer” to compare with the model response, then mark “I know this” when you can explain the concept without help. This is self-assessment, not automatic grading of written responses.</p>
+</section>
+<div id="questions"></div>
+<section class="panel"><h2>Final pathway challenge</h2><p>Without looking at the answers, explain: glycogen → glucose-1-phosphate → glucose-6-phosphate, then compare the fate of glucose-6-phosphate in liver and skeletal muscle.</p><textarea id="finalresponse" placeholder="Write your pathway explanation here..."></textarea><button class="primary" id="finaltoggle">Reveal pathway answer</button><div class="answer hidden" id="finalanswer"><strong>Model pathway</strong>Glycogen phosphorylase releases glucose-1-phosphate from α-1,4-linked residues; the debranching enzyme handles branch points. Phosphoglucomutase converts glucose-1-phosphate to glucose-6-phosphate. In liver, glucose-6-phosphatase can produce free glucose for release into blood. In skeletal muscle, glucose-6-phosphate primarily enters glycolysis to help make ATP for contraction.</div></section>
+<footer class="hint">Study note: liver glycogen supports blood-glucose homeostasis; skeletal muscle glycogen supplies local fuel. Glycolysis does not directly require oxygen.</footer>
+</main>
+<script>
+const data = [
+["Define glycogen and explain its primary function.","Glycogen is the storage form of glucose in humans. It provides a reserve of glucose for energy needs and helps the liver maintain blood glucose.","structure"],
+["What are the basic building blocks of glycogen?","Glucose monomers joined into a highly branched polysaccharide.","structure"],
+["What is the difference between α-1,4 and α-1,6 glycosidic bonds?","α-1,4 bonds form the main chains; α-1,6 bonds form branch points.","structure"],
+["Approximately how frequently does glycogen branch?","Approximately every 8–12 glucose residues; often simplified to about every 10 residues.","structure"],
+["Which two major tissues store glycogen?","The liver and skeletal muscle.","structure"],
+["What is the primary function of liver glycogen?","Maintaining blood glucose, especially between meals and during fasting.","structure"],
+["What is the primary function of skeletal muscle glycogen?","Providing a local fuel supply for ATP production during muscle contraction.","structure"],
+["Why can liver glycogen support blood glucose but muscle glycogen generally cannot?","The liver has glucose-6-phosphatase to produce free glucose for release into blood. Skeletal muscle lacks significant glucose-6-phosphatase activity.","structure"],
+["Define glycogenolysis.","The breakdown of glycogen, producing glucose-1-phosphate from most glucose residues.","metabolism"],
+["Which enzyme breaks α-1,4 bonds to release glucose-1-phosphate?","Glycogen phosphorylase.","metabolism"],
+["What enzyme helps glycogen breakdown at branch points?","The glycogen debranching enzyme, with transferase and α-1,6-glucosidase activities.","metabolism"],
+["Which enzyme converts glucose-1-phosphate to glucose-6-phosphate?","Phosphoglucomutase.","metabolism"],
+["Name two metabolic fates of glucose-6-phosphate from glycogen.","In liver it can be converted to free glucose for blood release. In muscle it can enter glycolysis to generate ATP. It may also enter the pentose phosphate pathway.","metabolism"],
+["What is glycolysis, and where does it occur?","Glycolysis converts glucose-derived intermediates into pyruvate, producing ATP and NADH. It occurs in the cytosol.","metabolism"],
+["Does glycolysis directly require oxygen?","No. Glycolysis does not directly require oxygen and can generate ATP under anaerobic conditions.","metabolism"],
+["Why is muscle glycogen useful during sprinting?","It supplies rapid local fuel for glycolysis and ATP production when energy demand is high.","metabolism"],
+["What does UDP-glucose stand for, and what is its role?","Uridine diphosphate glucose; it is an activated glucose donor used to synthesize glycogen.","metabolism"],
+["Define glycogenesis.","The synthesis of glycogen from glucose-derived substrates.","metabolism"],
+["Where are glycogen granules located in cells?","In the cytoplasm of liver and skeletal muscle cells.","metabolism"],
+["Why is maintaining blood glucose important for the brain?","The brain relies heavily on glucose under ordinary conditions. During prolonged fasting, it can also use ketone bodies.","metabolism"],
+["A patient sprints for 100 meters. How does skeletal muscle glycogen help provide energy?","Glycogen is broken down to glucose-1-phosphate, converted to glucose-6-phosphate, and used in glycolysis to generate ATP.","clinical"],
+["During fasting, how can the liver use glycogen to increase blood glucose?","Glycogenolysis produces glucose-1-phosphate, which becomes glucose-6-phosphate. Glucose-6-phosphatase converts it to free glucose, which can enter the blood.","clinical"],
+["What may happen if glucose-6-phosphatase activity is impaired?","The liver cannot efficiently release free glucose from glucose-6-phosphate, potentially causing fasting hypoglycemia and glycogen accumulation.","clinical"],
+["Why is glycogen's branched structure advantageous?","Its many nonreducing ends allow enzymes to add or remove glucose residues rapidly.","clinical"],
+["Compare the main roles of liver and muscle glycogen.","Liver glycogen supports blood-glucose homeostasis; muscle glycogen supplies local energy for contraction.","clinical"]
+];
+const container=document.getElementById('questions');
+const states=data.map(()=>({text:'',revealed:false,mastered:false}));
+function render(){
+ const f=document.getElementById('filter').value; container.innerHTML='';
+ data.forEach((d,i)=>{if(f!=='all'&&d[2]!==f)return;
+ const card=document.createElement('section');card.className='question'+(states[i].mastered?' mastered':'');
+ const top=document.createElement('div');top.className='qtop';
+ const num=document.createElement('div');num.className='num';num.textContent=i+1;
+ const h=document.createElement('h2');h.textContent=d[0];
+ top.append(num,h);card.append(top);
+ const ta=document.createElement('textarea');ta.placeholder='Type your answer here...';ta.value=states[i].text;ta.setAttribute('aria-label','Your answer to question '+(i+1));ta.addEventListener('input',e=>states[i].text=e.target.value);card.append(ta);
+ const actions=document.createElement('div');actions.className='actions no-print';
+ const check=document.createElement('button');check.textContent=states[i].revealed?'Hide answer':'Check answer';check.addEventListener('click',()=>{states[i].revealed=!states[i].revealed;render()});
+ const master=document.createElement('button');master.textContent=states[i].mastered?'✓ Mastered':'I know this';master.addEventListener('click',()=>{states[i].mastered=!states[i].mastered;render()});
+ actions.append(check,master);card.append(actions);
+ if(states[i].revealed){const ans=document.createElement('div');ans.className='answer';const strong=document.createElement('strong');strong.textContent='Model answer';ans.append(strong,document.createTextNode(d[1]));card.append(ans)}
+ container.append(card);
+ });
+ updateProgress();
+}
+function updateProgress(){const n=states.filter(s=>s.mastered).length;document.getElementById('count').textContent=n+' of 25 mastered';document.getElementById('bar').style.width=(n/25*100)+'%';}
+document.getElementById('filter').addEventListener('change',render);
+document.getElementById('reset').addEventListener('click',()=>{if(confirm('Clear all written answers and mastery marks?')){states.forEach(s=>{s.text='';s.revealed=false;s.mastered=false});document.getElementById('finalresponse').value='';document.getElementById('finalanswer').classList.add('hidden');document.getElementById('finaltoggle').textContent='Reveal pathway answer';render()}});
+document.getElementById('print').addEventListener('click',()=>window.print());
+document.getElementById('showall').addEventListener('click',()=>{const all=states.every(s=>s.revealed);states.forEach(s=>s.revealed=!all);document.getElementById('showall').textContent=all?'Reveal all answers':'Hide all answers';render()});
+document.getElementById('finaltoggle').addEventListener('click',()=>{const a=document.getElementById('finalanswer');a.classList.toggle('hidden');document.getElementById('finaltoggle').textContent=a.classList.contains('hidden')?'Reveal pathway answer':'Hide pathway answer'});
+render();
+</script>
+</body></html>
